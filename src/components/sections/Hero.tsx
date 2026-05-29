@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { useTypewriter } from '@/hooks/useTypewriter';
 import { PERSONAL, ROLES, SOCIAL_LINKS } from '@/data/portfolio';
 import { Github, Linkedin, Mail, Download } from 'lucide-react';
@@ -27,6 +27,29 @@ function FloatingChip({ text, className, delay }: { text: string; className: str
 export function Hero() {
   const typed = useTypewriter(ROLES);
   const [showBubble, setShowBubble] = useState(false);
+
+  // 3D Tilt Values
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  // Smooth springs for rotation
+  const rotateX = useSpring(useTransform(mouseY, [-220, 220], [12, -12]), { stiffness: 200, damping: 25 });
+  const rotateY = useSpring(useTransform(mouseX, [-220, 220], [-12, 12]), { stiffness: 200, damping: 25 });
+
+  const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const x = event.clientX - rect.left - width / 2;
+    const y = event.clientY - rect.top - height / 2;
+    mouseX.set(x);
+    mouseY.set(y);
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
 
   useEffect(() => {
     const t = setTimeout(() => setShowBubble(true), 1200);
@@ -170,7 +193,14 @@ export function Hero() {
             initial={{ opacity: 0, scale: 0.85 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, ease: 'easeOut' }}
-            className="relative w-[min(90vw,440px)] aspect-square"
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            style={{
+              rotateX,
+              rotateY,
+              transformStyle: 'preserve-3d',
+            }}
+            className="relative w-[min(90vw,440px)] aspect-square cursor-grab active:cursor-grabbing"
           >
             {/* Rotating rings */}
             <div className="absolute inset-0 rounded-full border border-neon-blue/20 animate-spin-slow" />
@@ -182,6 +212,7 @@ export function Hero() {
 
             {/* Avatar */}
             <motion.div
+              style={{ transform: 'translateZ(50px)' }}
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
               className="absolute inset-6 rounded-full overflow-hidden border border-white/10 glow-strong"
@@ -189,7 +220,7 @@ export function Hero() {
               <img
                 src={PERSONAL.avatar}
                 alt={`${PERSONAL.name} avatar`}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover scale-105 hover:scale-110 transition-transform duration-700"
                 width={1024}
                 height={1024}
               />

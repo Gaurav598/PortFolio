@@ -48,7 +48,7 @@ export const PERSONAL = {
     'I craft cinematic web experiences, scalable backends, and AI-powered products. MERN · Spring Boot · React Native · GenAI · Cloud. Obsessed with shipping work that feels next-generation.',
   email: 'gaurav598895@gmail.com',
   location: 'India',
-  avatar: '/avatar.jpg',
+  avatar: '/profile_portrait.jpg',
   resumeUrl: '/resume.pdf',
 } as const;
 
