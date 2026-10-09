@@ -18,6 +18,7 @@ jspm_packages/
 dist/
 dist-ssr/
 build/
+*.tsbuildinfo
 
 # local env files
 .env
