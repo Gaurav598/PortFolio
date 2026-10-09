@@ -1,7 +1,13 @@
 import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowDownRight, ArrowUpRight, Github, Menu, X } from 'lucide-react';
-import { contributions, projects, toolkit, type Project } from './data/portfolio';
+import {
+  contributions,
+  projects,
+  toolkit,
+  type Contribution,
+  type Project,
+} from './data/portfolio';
 import { CodeVisual, FluxVisual, FlashVisual, NetworkVisual } from './components/SystemVisuals';
 
 const navigation = [
@@ -13,7 +19,15 @@ const navigation = [
   ['contact', 'Contact'],
 ] as const;
 
-function Reveal({ children, className = '' }: { children: ReactNode; className?: string }) {
+function Reveal({
+  children,
+  className = '',
+  delay = 0,
+}: {
+  children: ReactNode;
+  className?: string;
+  delay?: number;
+}) {
   const reduced = useReducedMotion();
   return (
     <motion.div
@@ -21,7 +35,7 @@ function Reveal({ children, className = '' }: { children: ReactNode; className?:
       initial={reduced ? false : { opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-70px' }}
-      transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </motion.div>
@@ -61,7 +75,7 @@ function Header() {
           className="wordmark"
           href="#top"
           onClick={() => setOpen(false)}
-          aria-label="Gaurav, back to top"
+          aria-label="Gaurav Thakur, back to top"
         >
           <span className="mark">
             G<span>.</span>
@@ -151,31 +165,49 @@ function Hero() {
           <div className="eyebrow hero-eyebrow">
             <span className="live-dot" /> ENGINEERING PORTFOLIO / 2026
           </div>
-          <motion.h1
-            id="hero-title"
-            initial={reduced ? false : { opacity: 0, y: 28 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-          >
-            <span className="hero-hello">Hi, I’m Gaurav.</span>
-            <br />I build <em>systems</em>
-            <br />
-            that hold up.
-          </motion.h1>
+          <h1 id="hero-title" aria-label="Hi, I’m Gaurav Thakur. I build systems that hold up.">
+            <motion.span
+              className="hero-line hero-hello"
+              aria-hidden="true"
+              initial={reduced ? false : { opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.65, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
+            >
+              Hi, I’m Gaurav Thakur.
+            </motion.span>
+            <motion.span
+              className="hero-line"
+              aria-hidden="true"
+              initial={reduced ? false : { opacity: 0, y: 28 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.72, delay: 0.17, ease: [0.22, 1, 0.36, 1] }}
+            >
+              I build <em>systems</em>
+            </motion.span>
+            <motion.span
+              className="hero-line"
+              aria-hidden="true"
+              initial={reduced ? false : { opacity: 0, y: 28 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.72, delay: 0.29, ease: [0.22, 1, 0.36, 1] }}
+            >
+              that hold up.
+            </motion.span>
+          </h1>
           <motion.p
             className="hero-description"
             initial={reduced ? false : { opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.14 }}
+            transition={{ duration: 0.7, delay: 0.4 }}
           >
-            Backend oriented software engineer in the making. I turn real-time ideas into full-stack
-            products, and study distributed systems by building them.
+            I build real-time, full-stack products with a backend focus, and deepen my understanding
+            of distributed systems by implementing them.
           </motion.p>
           <motion.div
             className="hero-actions"
             initial={reduced ? false : { opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.26 }}
+            transition={{ duration: 0.7, delay: 0.52 }}
           >
             <a className="button button-primary" href="#work">
               Explore the work <ArrowDownRight size={17} />
@@ -227,8 +259,8 @@ function About() {
         <div className="about-layout">
           <Reveal className="about-lead">
             <p>
-              I’m a college student focused on backend engineering, distributed systems, and the
-              details that make products reliable.
+              I’m Gaurav Thakur, a B.Tech Computer Science student building toward backend and
+              distributed systems engineering.
             </p>
           </Reveal>
           <Reveal className="about-body">
@@ -242,6 +274,12 @@ function About() {
               Contributing to Kubernetes projects puts that thinking in front of real maintainers
               and review processes. I’m continuing to study infrastructure, system design, and
               production engineering while improving the software I ship.
+            </p>
+            <p>
+              At Maharishi Markandeshwar (Deemed to be University), I’m studying Computer Science
+              from 2024–2028. A three-month Software Engineering Trainee internship at FamilyShell
+              gave me experience with development, testing, and debugging across Flutter, FastAPI,
+              MongoDB, and Git workflows.
             </p>
             <a className="text-link" href="#open-source">
               See the open-source work <ArrowUpRight size={16} />
@@ -379,6 +417,39 @@ function Work() {
   );
 }
 
+function ContributionCard({
+  item,
+  featured,
+  index,
+}: {
+  item: Contribution;
+  featured: boolean;
+  index: number;
+}) {
+  const reduced = useReducedMotion();
+  return (
+    <motion.a
+      className={`contribution ${featured ? 'featured' : 'compact'}`}
+      href={item.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      initial={reduced ? false : { opacity: 0, y: 18 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-45px' }}
+      transition={{ duration: 0.55, delay: index * 0.07, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <div>
+        <span className="contribution-repo">
+          {item.repo} <small>#{item.number}</small>
+        </span>
+        <h3>{item.title}</h3>
+        <p>{item.detail}</p>
+      </div>
+      <ArrowUpRight size={featured ? 20 : 18} aria-hidden="true" />
+    </motion.a>
+  );
+}
+
 function OpenSource() {
   const merged = contributions.filter((x) => x.status === 'Merged');
   const open = contributions.filter((x) => x.status === 'Open');
@@ -420,45 +491,15 @@ function OpenSource() {
               <span className="status merged">● MERGED</span>
               <span>UPSTREAM / 02</span>
             </div>
-            {merged.map((item) => (
-              <a
-                className="contribution featured"
-                href={item.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                key={item.url}
-              >
-                <div>
-                  <span className="contribution-repo">
-                    {item.repo} <small>#{item.number}</small>
-                  </span>
-                  <h3>{item.title}</h3>
-                  <p>{item.detail}</p>
-                </div>
-                <ArrowUpRight size={19} aria-hidden="true" />
-              </a>
+            {merged.map((item, index) => (
+              <ContributionCard item={item} featured index={index} key={item.url} />
             ))}
             <div className="feed-title open-title">
               <span className="status open">◌ OPEN FOR REVIEW</span>
               <span>IN PROGRESS / 04</span>
             </div>
-            {open.map((item) => (
-              <a
-                className="contribution compact"
-                href={item.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                key={item.url}
-              >
-                <div>
-                  <span className="contribution-repo">
-                    {item.repo} <small>#{item.number}</small>
-                  </span>
-                  <h3>{item.title}</h3>
-                  <p>{item.detail}</p>
-                </div>
-                <ArrowUpRight size={18} aria-hidden="true" />
-              </a>
+            {open.map((item, index) => (
+              <ContributionCard item={item} featured={false} index={index} key={item.url} />
             ))}
           </div>
         </div>
@@ -485,7 +526,7 @@ function Toolkit() {
         </Reveal>
         <div className="toolkit-grid">
           {toolkit.map((group, i) => (
-            <Reveal className="toolkit-card" key={group.title}>
+            <Reveal className="toolkit-card" delay={i * 0.07} key={group.title}>
               <span className="toolkit-index">0{i + 1} /</span>
               <h3>{group.title}</h3>
               <div className="toolkit-items">
@@ -518,22 +559,32 @@ function Journey() {
                 Learning in <em>public.</em>
               </>
             }
-            intro="Only milestones supported by the linked work and current self-reported background."
+            intro="A path through formal study, product engineering, and upstream collaboration."
           />
         </Reveal>
         <div className="journey-grid">
-          <div className="journey-item">
-            <span className="journey-date">NOW</span>
+          <Reveal className="journey-item">
+            <span className="journey-date">2024–2028</span>
             <div>
-              <h3>Software engineering student</h3>
+              <h3>B.Tech in Computer Science</h3>
               <p>
-                Building backend-heavy products while studying distributed systems, DevOps, design
-                patterns, and system design. Internship experience completed; role and organization
-                are omitted until verified.
+                Maharishi Markandeshwar (Deemed to be University). Studying software engineering
+                while building backend-heavy products and exploring distributed systems.
               </p>
             </div>
-          </div>
-          <div className="journey-item">
+          </Reveal>
+          <Reveal className="journey-item" delay={0.07}>
+            <span className="journey-date">3 MONTHS</span>
+            <div>
+              <h3>Software Engineering Trainee · FamilyShell</h3>
+              <p>
+                Completed an internship spanning development, testing, and debugging with Flutter,
+                FastAPI, MongoDB, and Git workflows. Received an Internship Completion Certificate
+                and Letter of Recommendation.
+              </p>
+            </div>
+          </Reveal>
+          <Reveal className="journey-item" delay={0.14}>
             <span className="journey-date">2026</span>
             <div>
               <h3>Two Kubernetes ecosystem PRs merged</h3>
@@ -542,8 +593,8 @@ function Journey() {
                 path.
               </p>
             </div>
-          </div>
-          <div className="journey-item">
+          </Reveal>
+          <Reveal className="journey-item" delay={0.21}>
             <span className="journey-date">ONGOING</span>
             <div>
               <h3>From projects to upstream review</h3>
@@ -552,7 +603,7 @@ function Journey() {
                 measurement, and documentation.
               </p>
             </div>
-          </div>
+          </Reveal>
         </div>
       </div>
     </section>
@@ -604,16 +655,26 @@ function Contact() {
           </h2>
           <p>
             Interested in backend systems, real-time products, and thoughtful engineering teams.
-            Explore the source, contribution history, and discussions on GitHub.
+            Explore my source and contribution history on GitHub, or connect with me on LinkedIn.
           </p>
-          <a
-            className="button button-primary contact-button"
-            href="https://github.com/Gaurav598"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Github size={18} /> Connect on GitHub <ArrowUpRight size={18} />
-          </a>
+          <div className="contact-actions">
+            <a
+              className="button button-primary"
+              href="https://github.com/Gaurav598"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Github size={18} /> Connect on GitHub <ArrowUpRight size={18} />
+            </a>
+            <a
+              className="button button-quiet"
+              href="https://www.linkedin.com/in/gaurav-thakur-193619321/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              LinkedIn <ArrowUpRight size={18} />
+            </a>
+          </div>
         </Reveal>
       </div>
     </section>
@@ -624,26 +685,33 @@ function Footer() {
   return (
     <footer className="site-footer">
       <div className="container">
-        <div className="footer-top">
+        <Reveal className="footer-top">
           <a href="#top" className="footer-wordmark">
             G<span>.</span>
           </a>
           <p>
-            Software engineering student
+            Gaurav Thakur · Software engineering student
             <br />
             Backend · Distributed systems · Full-stack
           </p>
           <a href="#top" className="back-to-top">
             BACK TO TOP ↑
           </a>
-        </div>
+        </Reveal>
         <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} GAURAV</span>
+          <span>© {new Date().getFullYear()} GAURAV THAKUR</span>
           <div>
             <a href="#work">WORK</a>
             <a href="#open-source">OPEN SOURCE</a>
             <a href="https://github.com/Gaurav598" target="_blank" rel="noopener noreferrer">
               GITHUB ↗
+            </a>
+            <a
+              href="https://www.linkedin.com/in/gaurav-thakur-193619321/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              LINKEDIN ↗
             </a>
           </div>
           <span>BUILT WITH INTENT</span>

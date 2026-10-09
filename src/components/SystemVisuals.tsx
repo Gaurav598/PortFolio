@@ -1,7 +1,11 @@
 import type { PointerEvent } from 'react';
 
 const pointerLight = (event: PointerEvent<HTMLDivElement>) => {
-  if (event.pointerType === 'touch') return;
+  if (
+    event.pointerType !== 'mouse' ||
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  )
+    return;
   const bounds = event.currentTarget.getBoundingClientRect();
   event.currentTarget.style.setProperty(
     '--pointer-x',
@@ -18,6 +22,10 @@ export function NetworkVisual() {
     <div
       className="network-visual"
       onPointerMove={pointerLight}
+      onPointerLeave={(event) => {
+        event.currentTarget.style.removeProperty('--pointer-x');
+        event.currentTarget.style.removeProperty('--pointer-y');
+      }}
       aria-label="Diagram of a client connected to sync, API, data, and infrastructure services"
       role="img"
     >
