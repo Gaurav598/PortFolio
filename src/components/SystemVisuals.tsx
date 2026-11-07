@@ -94,6 +94,74 @@ export function NetworkVisual() {
   );
 }
 
+// NeuraSWE: ReAct agent architecture visual
+export function NeuraSWEVisual() {
+  return (
+    <div
+      className="visual-frame neuraswe-visual"
+      role="img"
+      aria-label="NeuraSWE architecture: GitHub and Jira webhooks, Redis job queue, ReAct agent loop with 10 tools, Docker execution sandbox, and pull request output"
+    >
+      <div className="visual-topbar">
+        <span>
+          <i />
+          <i />
+          <i />
+        </span>
+        <span>NEURASWE / REACT AGENT</span>
+        <span>10 TOOLS</span>
+      </div>
+      <div className="ns-diagram">
+        <div className="ns-top">
+          <div className="ns-source">
+            <small>TRIGGER</small>
+            <strong>GitHub Issue</strong>
+          </div>
+          <div className="ns-sep">+</div>
+          <div className="ns-source">
+            <small>TRIGGER</small>
+            <strong>Jira Webhook</strong>
+          </div>
+        </div>
+        <div className="ns-arrow">↓</div>
+        <div className="ns-queue">
+          <small>QUEUE</small>
+          <strong>Redis / arq</strong>
+        </div>
+        <div className="ns-arrow">↓</div>
+        <div className="ns-core">
+          <div className="ns-loop">
+            <span className="ns-loop-label">ReAct Loop</span>
+            <div className="ns-tools">
+              <span>RAG Search</span>
+              <span>AST Chunk</span>
+              <span>Write File</span>
+              <span>Run Tests</span>
+              <span>Open PR</span>
+            </div>
+          </div>
+          <div className="ns-sandbox">
+            <small>DOCKER SANDBOX</small>
+            <span>resource-limited</span>
+            <div className="ns-sandbox-bar" />
+          </div>
+        </div>
+        <div className="ns-arrow">↓</div>
+        <div className="ns-output">
+          <div className="ns-pr">
+            <small>OUTPUT</small>
+            <strong>Pull Request</strong>
+          </div>
+          <div className="ns-stream">
+            <small>STREAMING</small>
+            <strong>Socket.IO</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function CodeVisual() {
   return (
     <div
@@ -107,7 +175,7 @@ export function CodeVisual() {
           <i />
           <i />
         </span>
-        <span>ARCHITECTURE ILLUSTRATION</span>
+        <span>CODECOLLAB / SYNC ARCHITECTURE</span>
         <span>⌘</span>
       </div>
       <div className="editor-layout">
@@ -168,57 +236,12 @@ export function CodeVisual() {
   );
 }
 
-export function FluxVisual() {
-  return (
-    <div
-      className="visual-frame flux-visual"
-      role="img"
-      aria-label="Flux flow: passenger request, available riders, bids, selection, and tracking"
-    >
-      <div className="visual-topbar">
-        <span>FLUX / RIDE FLOW</span>
-        <span>DEMO SYSTEM</span>
-      </div>
-      <div className="flux-map">
-        <div className="map-road road-one" />
-        <div className="map-road road-two" />
-        <div className="map-road road-three" />
-        <div className="map-route" />
-        <span className="map-pin pin-a">A</span>
-        <span className="map-pin pin-b">B</span>
-        <span className="map-rider rider-a">↗</span>
-        <span className="map-rider rider-b">↗</span>
-        <div className="map-card">
-          <span>RIDE REQUEST</span>
-          <strong>Passenger → Rider</strong>
-          <small>Bid selection in progress</small>
-          <div>
-            <i />
-            <i />
-            <i />
-            <i />
-          </div>
-        </div>
-      </div>
-      <div className="flux-flow">
-        <span>01 REQUEST</span>
-        <b>→</b>
-        <span>02 RIDERS</span>
-        <b>→</b>
-        <span>03 BIDS</span>
-        <b>→</b>
-        <span>04 TRACK</span>
-      </div>
-    </div>
-  );
-}
-
 export function FlashVisual() {
   return (
     <div
       className="visual-frame flash-visual"
       role="img"
-      aria-label="FlashFlow architecture: clients enter an API gateway, then auth and order services; order service calls stock service backed by Redis and saves to MongoDB"
+      aria-label="FlashFlow architecture: clients enter an API gateway with JWT verification, then auth and order services; order service calls stock service backed by Redis and saves to MongoDB"
     >
       <div className="visual-topbar">
         <span>FLASHFLOW / SERVICE TOPOLOGY</span>
@@ -228,7 +251,7 @@ export function FlashVisual() {
         <div className="flash-node incoming">
           <small>01 / INGRESS</small>
           <strong>API Gateway</strong>
-          <span>Express</span>
+          <span>Express + JWT verify</span>
         </div>
         <div className="flash-connect vertical" />
         <div className="flash-middle">
@@ -247,9 +270,54 @@ export function FlashVisual() {
         <div className="flash-node stock">
           <small>04 / INVENTORY</small>
           <strong>Stock Service</strong>
-          <span>Redis counter · DECRBY</span>
+          <span>Redis · DECRBY</span>
         </div>
         <div className="flash-pulse">REQUESTS → RESERVE → PERSIST</div>
+      </div>
+    </div>
+  );
+}
+
+export function FluxVisual() {
+  return (
+    <div
+      className="visual-frame flux-visual"
+      role="img"
+      aria-label="Flux architecture: passenger and rider React Native apps connect to Spring Boot API; bid acceptance uses PESSIMISTIC_WRITE locking; events delivered via STOMP and FCM; deployed to AWS EC2 via GitHub Actions"
+    >
+      <div className="visual-topbar">
+        <span>FLUX / RIDE FLOW</span>
+        <span>SPRING BOOT · AWS EC2</span>
+      </div>
+      <div className="flux-map">
+        <div className="map-road road-one" />
+        <div className="map-road road-two" />
+        <div className="map-road road-three" />
+        <div className="map-route" />
+        <span className="map-pin pin-a">A</span>
+        <span className="map-pin pin-b">B</span>
+        <span className="map-rider rider-a">↗</span>
+        <span className="map-rider rider-b">↗</span>
+        <div className="map-card">
+          <span>RIDE REQUEST</span>
+          <strong>Passenger → Rider</strong>
+          <small>PESSIMISTIC_WRITE locking</small>
+          <div>
+            <i />
+            <i />
+            <i />
+            <i />
+          </div>
+        </div>
+      </div>
+      <div className="flux-flow">
+        <span>01 REQUEST</span>
+        <b>→</b>
+        <span>02 BIDS</span>
+        <b>→</b>
+        <span>03 LOCK</span>
+        <b>→</b>
+        <span>04 TRACK</span>
       </div>
     </div>
   );

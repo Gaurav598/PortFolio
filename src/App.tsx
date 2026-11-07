@@ -1,21 +1,40 @@
 import { useEffect, useState, type CSSProperties, type ReactNode } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { ArrowDownRight, ArrowUpRight, Github, Menu, X } from 'lucide-react';
 import {
+  ArrowDownRight,
+  ArrowUpRight,
+  Download,
+  Github,
+  Linkedin,
+  Mail,
+  Menu,
+  X,
+} from 'lucide-react';
+import {
+  achievements,
   contributions,
+  experience,
   projects,
   toolkit,
+  type Achievement,
   type Contribution,
+  type Experience,
   type Project,
 } from './data/portfolio';
-import { CodeVisual, FluxVisual, FlashVisual, NetworkVisual } from './components/SystemVisuals';
+import {
+  CodeVisual,
+  FlashVisual,
+  FluxVisual,
+  NetworkVisual,
+  NeuraSWEVisual,
+} from './components/SystemVisuals';
 
 const navigation = [
   ['about', 'About'],
   ['work', 'Work'],
-  ['open-source', 'Open source'],
+  ['experience', 'Experience'],
+  ['open-source', 'Open Source'],
   ['toolkit', 'Toolkit'],
-  ['journey', 'Journey'],
   ['contact', 'Contact'],
 ] as const;
 
@@ -45,6 +64,8 @@ function Reveal({
 function Header() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState('top');
+  const [scrolled, setScrolled] = useState(false);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -61,6 +82,13 @@ function Header() {
     });
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   useEffect(() => {
     const close = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setOpen(false);
@@ -68,8 +96,9 @@ function Header() {
     window.addEventListener('keydown', close);
     return () => window.removeEventListener('keydown', close);
   }, []);
+
   return (
-    <header className="site-header">
+    <header className={`site-header ${scrolled ? 'scrolled' : ''}`}>
       <nav className="nav-shell" aria-label="Primary navigation">
         <a
           className="wordmark"
@@ -91,14 +120,24 @@ function Header() {
             </a>
           ))}
         </div>
-        <a
-          className="nav-contact"
-          href="https://github.com/Gaurav598"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          GitHub <ArrowUpRight size={15} aria-hidden="true" />
-        </a>
+        <div className="nav-actions">
+          <a
+            className="nav-resume"
+            href="Gaurav_Kumar_Thakur_Resume.pdf"
+            download
+            aria-label="Download Resume PDF"
+          >
+            <Download size={14} aria-hidden="true" /> Resume
+          </a>
+          <a
+            className="nav-contact"
+            href="https://github.com/Gaurav598"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub <ArrowUpRight size={15} aria-hidden="true" />
+          </a>
+        </div>
         <button
           className="menu-toggle"
           type="button"
@@ -117,6 +156,9 @@ function Header() {
             <ArrowUpRight size={16} aria-hidden="true" />
           </a>
         ))}
+        <a href="Gaurav_Kumar_Thakur_Resume.pdf" download onClick={() => setOpen(false)}>
+          Download Resume <Download size={16} />
+        </a>
         <a
           href="https://github.com/Gaurav598"
           target="_blank"
@@ -165,7 +207,10 @@ function Hero() {
           <div className="eyebrow hero-eyebrow">
             <span className="live-dot" /> ENGINEERING PORTFOLIO / 2026
           </div>
-          <h1 id="hero-title" aria-label="Hi, I’m Gaurav Thakur. I build systems that hold up.">
+          <h1
+            id="hero-title"
+            aria-label="Building Reliable Systems. Engineering Beyond the Interface."
+          >
             <motion.span
               className="hero-line hero-hello"
               aria-hidden="true"
@@ -173,7 +218,7 @@ function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.65, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
             >
-              Hi, I’m Gaurav Thakur.
+              Building Reliable Systems.
             </motion.span>
             <motion.span
               className="hero-line"
@@ -182,7 +227,7 @@ function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.72, delay: 0.17, ease: [0.22, 1, 0.36, 1] }}
             >
-              I build <em>systems</em>
+              Engineering <em>Beyond</em>
             </motion.span>
             <motion.span
               className="hero-line"
@@ -191,7 +236,7 @@ function Hero() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.72, delay: 0.29, ease: [0.22, 1, 0.36, 1] }}
             >
-              that hold up.
+              the Interface.
             </motion.span>
           </h1>
           <motion.p
@@ -200,8 +245,9 @@ function Hero() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.4 }}
           >
-            I build real-time, full-stack products with a backend focus, and deepen my understanding
-            of distributed systems by implementing them.
+            Computer Science student focused on backend engineering, distributed systems, and
+            AI-powered software. I build complete products and contribute to production-grade
+            open-source projects.
           </motion.p>
           <motion.div
             className="hero-actions"
@@ -210,7 +256,7 @@ function Hero() {
             transition={{ duration: 0.7, delay: 0.52 }}
           >
             <a className="button button-primary" href="#work">
-              Explore the work <ArrowDownRight size={17} />
+              Explore Projects <ArrowDownRight size={17} />
             </a>
             <a
               className="button button-quiet"
@@ -220,13 +266,16 @@ function Hero() {
             >
               <Github size={17} /> GitHub <ArrowUpRight size={16} />
             </a>
+            <a className="button button-quiet" href="Gaurav_Kumar_Thakur_Resume.pdf" download>
+              <Download size={17} /> Resume
+            </a>
           </motion.div>
           <div className="hero-meta">
             <span>
-              <strong>FOCUS</strong> Backend / Distributed systems
+              <strong>FOCUS</strong> Backend · Distributed Systems · AI Agents
             </span>
             <span>
-              <strong>ALSO</strong> Full-stack / Open source
+              <strong>ALSO</strong> Full-stack · Open Source
             </span>
           </div>
         </div>
@@ -259,30 +308,31 @@ function About() {
         <div className="about-layout">
           <Reveal className="about-lead">
             <p>
-              I’m Gaurav Thakur, a B.Tech Computer Science student building toward backend and
+              I'm Gaurav Thakur, a B.Tech Computer Science student building toward backend and
               distributed systems engineering.
             </p>
           </Reveal>
           <Reveal className="about-body">
             <p>
-              I learn by building complete systems: collaborative editing across services, two-sided
-              ride workflows, and inventory under contention. That work has taught me to pay
-              attention to state, failure paths, and the contract between interfaces and
-              infrastructure.
+              I learn by building complete systems: AI browser agents, autonomous software
+              engineering agents, collaborative editing across services, and inventory reservation
+              under contention. That work has taught me to think carefully about state, failure
+              paths, and the contract between interfaces and infrastructure.
             </p>
             <p>
-              Contributing to Kubernetes projects puts that thinking in front of real maintainers
-              and review processes. I’m continuing to study infrastructure, system design, and
-              production engineering while improving the software I ship.
+              Contributing to Kubernetes and Apache Beam puts that thinking in front of real
+              maintainers and review processes. My focus is backend engineering, distributed
+              systems, and AI-powered software — not because they're fashionable, but because
+              they're hard in the right ways.
             </p>
             <p>
-              At Maharishi Markandeshwar (Deemed to be University), I’m studying Computer Science
-              from 2024–2028. A three-month Software Engineering Trainee internship at FamilyShell
-              gave me experience with development, testing, and debugging across Flutter, FastAPI,
-              MongoDB, and Git workflows.
+              At Maharishi Markandeshwar (Deemed to be University), I'm studying Computer Science
+              from 2024–2028 (CGPA 7.53/10). A three-month Software Engineer Internship at
+              FamilyShell gave me experience with real production trade-offs across Flutter,
+              FastAPI, MongoDB, and Redis.
             </p>
             <a className="text-link" href="#open-source">
-              See the open-source work <ArrowUpRight size={16} />
+              See open-source contributions <ArrowUpRight size={16} />
             </a>
           </Reveal>
         </div>
@@ -293,13 +343,16 @@ function About() {
 
 function ProjectCard({ project }: { project: Project }) {
   const visual =
-    project.id === 'codecollab' ? (
+    project.id === 'neuraswe' ? (
+      <NeuraSWEVisual />
+    ) : project.id === 'codecollab' ? (
       <CodeVisual />
-    ) : project.id === 'flux' ? (
-      <FluxVisual />
-    ) : (
+    ) : project.id === 'flashflow' ? (
       <FlashVisual />
+    ) : (
+      <FluxVisual />
     );
+
   return (
     <article className={`project-card project-${project.id}`}>
       <div className="project-topline">
@@ -331,6 +384,17 @@ function ProjectCard({ project }: { project: Project }) {
             >
               View source <ArrowUpRight size={16} />
             </a>
+            {project.demo && (
+              <a
+                className="button button-quiet"
+                href={project.demo}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Live demo for ${project.name}`}
+              >
+                Live demo <ArrowUpRight size={16} />
+              </a>
+            )}
             <span className="project-note">{project.note || 'Architecture & implementation'}</span>
           </div>
         </div>
@@ -402,7 +466,7 @@ function Work() {
                 Built to explain <em>how</em> it works.
               </>
             }
-            intro="Three systems, three different engineering problems. Open each case study for the design decisions and current limits."
+            intro="Four systems, four distinct engineering problems. Open each case study for the design decisions, architecture, and current limits."
           />
         </Reveal>
         <div className="project-list">
@@ -417,35 +481,111 @@ function Work() {
   );
 }
 
-function ContributionCard({
-  item,
-  featured,
-  index,
-}: {
-  item: Contribution;
-  featured: boolean;
-  index: number;
-}) {
+function ExperienceCard({ exp }: { exp: Experience }) {
+  return (
+    <article className="exp-card">
+      <div className="exp-header">
+        <div className="exp-meta">
+          <span className="exp-period">{exp.period}</span>
+          <span className="exp-location">{exp.location}</span>
+        </div>
+        <div className="exp-title">
+          <h3>{exp.role}</h3>
+          <span className="exp-company">{exp.company}</span>
+        </div>
+      </div>
+      <ul className="exp-highlights">
+        {exp.highlights.map((h) => (
+          <li key={h}>{h}</li>
+        ))}
+      </ul>
+      <div className="exp-stack">
+        {exp.stack.map((s) => (
+          <span key={s}>{s}</span>
+        ))}
+      </div>
+    </article>
+  );
+}
+
+function ExperienceSection() {
+  return (
+    <section className="section experience-section" id="experience">
+      <div className="container">
+        <Reveal>
+          <SectionHeading
+            index="03"
+            label="EXPERIENCE"
+            title={
+              <>
+                Engineering in <em>production.</em>
+              </>
+            }
+            intro="Real engineering decisions under time and complexity constraints."
+          />
+        </Reveal>
+        <div className="exp-list">
+          {experience.map((exp) => (
+            <Reveal key={exp.company} delay={0.07}>
+              <ExperienceCard exp={exp} />
+            </Reveal>
+          ))}
+        </div>
+        <Reveal delay={0.14}>
+          <div className="journey-grid" style={{ marginTop: '48px' }}>
+            <div className="journey-item">
+              <span className="journey-date">2024–2028</span>
+              <div>
+                <h3>B.Tech in Computer Science</h3>
+                <p>
+                  Maharishi Markandeshwar (Deemed to be University) · CGPA 7.53/10. Studying
+                  software engineering while building backend-heavy products and exploring
+                  distributed systems.
+                </p>
+              </div>
+            </div>
+            <div className="journey-item">
+              <span className="journey-date">2026</span>
+              <div>
+                <h3>7 pull requests merged across Kubernetes & Apache Beam</h3>
+                <p>
+                  Contributions spanning Go (client-go, DRA, perf-tests), Python (Dask runner,
+                  typehints, BigQuery I/O), and documentation to Kubernetes website.
+                </p>
+              </div>
+            </div>
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+function ContributionCard({ item, index }: { item: Contribution; index: number }) {
   const reduced = useReducedMotion();
+  const isMerged = item.status === 'Merged';
   return (
     <motion.a
-      className={`contribution ${featured ? 'featured' : 'compact'}`}
+      className={`contribution ${isMerged ? 'featured' : 'compact'}`}
       href={item.url}
       target="_blank"
       rel="noopener noreferrer"
       initial={reduced ? false : { opacity: 0, y: 18 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-45px' }}
-      transition={{ duration: 0.55, delay: index * 0.07, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.55, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] }}
     >
       <div>
-        <span className="contribution-repo">
-          {item.repo} <small>#{item.number}</small>
-        </span>
+        <div className="contribution-meta">
+          <span className="contribution-repo">
+            {item.repo} <small>#{item.number}</small>
+          </span>
+          <span className={`contribution-lang lang-${item.lang.toLowerCase()}`}>{item.lang}</span>
+        </div>
         <h3>{item.title}</h3>
         <p>{item.detail}</p>
       </div>
-      <ArrowUpRight size={featured ? 20 : 18} aria-hidden="true" />
+      <ArrowUpRight size={isMerged ? 20 : 18} aria-hidden="true" />
     </motion.a>
   );
 }
@@ -458,20 +598,34 @@ function OpenSource() {
       <div className="container">
         <Reveal>
           <SectionHeading
-            index="03"
+            index="04"
             label="OPEN SOURCE"
             title={
               <>
                 Engineering beyond <em>my own repositories.</em>
               </>
             }
-            intro="Contributions to the Kubernetes ecosystem, from rollout reporting and resource restoration to ongoing reliability and performance work. Status checked 9 October 2026."
+            intro="Merged contributions to Kubernetes (client-go, DRA, perf-tests, website) and Apache Beam (Dask runner, typehints, BigQuery I/O). Status checked November 2026."
           />
         </Reveal>
         <div className="oss-layout">
           <div className="oss-intro">
             <div className="oss-orbit" aria-hidden="true">
               <span>K8s</span>
+            </div>
+            <div className="oss-stats">
+              <div className="oss-stat">
+                <strong>7</strong>
+                <span>PRs merged</span>
+              </div>
+              <div className="oss-stat">
+                <strong>3</strong>
+                <span>repos</span>
+              </div>
+              <div className="oss-stat">
+                <strong>2</strong>
+                <span>languages</span>
+              </div>
             </div>
             <p>
               Working upstream means reading unfamiliar code, writing tests, discussing trade-offs,
@@ -489,18 +643,22 @@ function OpenSource() {
           <div className="oss-feed">
             <div className="feed-title">
               <span className="status merged">● MERGED</span>
-              <span>UPSTREAM / 02</span>
+              <span>UPSTREAM / {String(merged.length).padStart(2, '0')}</span>
             </div>
             {merged.map((item, index) => (
-              <ContributionCard item={item} featured index={index} key={item.url} />
+              <ContributionCard item={item} index={index} key={item.url} />
             ))}
-            <div className="feed-title open-title">
-              <span className="status open">◌ OPEN FOR REVIEW</span>
-              <span>IN PROGRESS / 04</span>
-            </div>
-            {open.map((item, index) => (
-              <ContributionCard item={item} featured={false} index={index} key={item.url} />
-            ))}
+            {open.length > 0 && (
+              <>
+                <div className="feed-title open-title">
+                  <span className="status open">◌ OPEN FOR REVIEW</span>
+                  <span>IN PROGRESS / {String(open.length).padStart(2, '0')}</span>
+                </div>
+                {open.map((item, index) => (
+                  <ContributionCard item={item} index={index} key={item.url} />
+                ))}
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -514,14 +672,14 @@ function Toolkit() {
       <div className="container">
         <Reveal>
           <SectionHeading
-            index="04"
+            index="05"
             label="ENGINEERING TOOLKIT"
             title={
               <>
                 Tools shaped by <em>the work.</em>
               </>
             }
-            intro="A practical stack, organized by where I use it. Current focus: backend systems, infrastructure, and reliable real-time experiences."
+            intro="A practical stack organized by where I use it. No progress bars or arbitrary percentages — just the tools that show up in my projects and contributions."
           />
         </Reveal>
         <div className="toolkit-grid">
@@ -537,104 +695,72 @@ function Toolkit() {
             </Reveal>
           ))}
         </div>
-        <div className="toolkit-footer">
-          <span>EXPLORING NEXT</span>
-          <p>Cloud infrastructure, observability, AI/ML, and developer tooling.</p>
-        </div>
       </div>
     </section>
   );
 }
 
-function Journey() {
+function AchievementsSection({ items }: { items: Achievement[] }) {
   return (
-    <section className="section journey-section" id="journey">
+    <section className="section achievements-section" id="achievements">
       <div className="container">
         <Reveal>
           <SectionHeading
-            index="05"
-            label="ENGINEERING JOURNEY"
+            index="06"
+            label="ACHIEVEMENTS"
             title={
               <>
-                Learning in <em>public.</em>
+                Practice and <em>recognition.</em>
               </>
             }
-            intro="A path through formal study, product engineering, and upstream collaboration."
+            intro="Competitive programming practice, cloud certifications, and AI foundations — all verified."
           />
         </Reveal>
-        <div className="journey-grid">
-          <Reveal className="journey-item">
-            <span className="journey-date">2024–2028</span>
-            <div>
-              <h3>B.Tech in Computer Science</h3>
-              <p>
-                Maharishi Markandeshwar (Deemed to be University). Studying software engineering
-                while building backend-heavy products and exploring distributed systems.
-              </p>
-            </div>
-          </Reveal>
-          <Reveal className="journey-item" delay={0.07}>
-            <span className="journey-date">3 MONTHS</span>
-            <div>
-              <h3>Software Engineering Trainee · FamilyShell</h3>
-              <p>
-                Completed an internship spanning development, testing, and debugging with Flutter,
-                FastAPI, MongoDB, and Git workflows. Received an Internship Completion Certificate
-                and Letter of Recommendation.
-              </p>
-            </div>
-          </Reveal>
-          <Reveal className="journey-item" delay={0.14}>
-            <span className="journey-date">2026</span>
-            <div>
-              <h3>Two Kubernetes ecosystem PRs merged</h3>
-              <p>
-                Changes to perf-tests rollout reporting and the DRA example driver’s restored claim
-                path.
-              </p>
-            </div>
-          </Reveal>
-          <Reveal className="journey-item" delay={0.21}>
-            <span className="journey-date">ONGOING</span>
-            <div>
-              <h3>From projects to upstream review</h3>
-              <p>
-                CodeCollab, Flux, and FlashFlow inform current contributions in reliability,
-                measurement, and documentation.
-              </p>
-            </div>
-          </Reveal>
+        <div className="achievements-grid">
+          {items.map((item, i) => (
+            <Reveal key={item.title} delay={i * 0.06}>
+              {item.url ? (
+                <a
+                  className="achievement-card achievement-link"
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span className="achievement-index">0{i + 1}</span>
+                  <div>
+                    <h3>{item.title}</h3>
+                    <p>{item.detail}</p>
+                  </div>
+                  <ArrowUpRight size={18} aria-hidden="true" className="achievement-arrow" />
+                </a>
+              ) : (
+                <div className="achievement-card">
+                  <span className="achievement-index">0{i + 1}</span>
+                  <div>
+                    <h3>{item.title}</h3>
+                    <p>{item.detail}</p>
+                  </div>
+                </div>
+              )}
+            </Reveal>
+          ))}
         </div>
-      </div>
-    </section>
-  );
-}
-
-function ProblemSolving() {
-  return (
-    <section className="section problem-section" id="practice">
-      <div className="container problem-layout">
-        <Reveal>
-          <div className="section-index">
-            <span>06</span>
-            <span className="index-line" />
-            <span>PROBLEM SOLVING</span>
+        <Reveal delay={0.3}>
+          <div className="dsa-banner">
+            <div className="dsa-graphic" aria-hidden="true">
+              <span>DSA</span>
+              <span>→</span>
+              <span>DESIGN</span>
+              <span>→</span>
+              <span>SYSTEMS</span>
+            </div>
+            <p>
+              Algorithms and data structures support the engineering decisions behind my projects.
+              LeetCode Knight with contest rating <strong>1939</strong> and <strong>600+</strong>{' '}
+              problems solved.
+            </p>
           </div>
-          <h2>Fundamentals are part of the build.</h2>
-          <p>
-            Algorithms and data structures support the engineering decisions behind my projects. My
-            September 2026 self-reported practice included <strong>343 LeetCode</strong> and{' '}
-            <strong>404 Take U Forward</strong> problems. These sets may overlap and are not a
-            unique total.
-          </p>
         </Reveal>
-        <div className="practice-graphic" aria-hidden="true">
-          <span>DSA</span>
-          <span>→</span>
-          <span>DESIGN</span>
-          <span>→</span>
-          <span>SYSTEMS</span>
-        </div>
       </div>
     </section>
   );
@@ -651,20 +777,28 @@ function Contact() {
             <span>CONTACT</span>
           </div>
           <h2>
-            Let’s build something <em>that matters.</em>
+            Let's build something <em>that matters.</em>
           </h2>
           <p>
-            Interested in backend systems, real-time products, and thoughtful engineering teams.
-            Explore my source and contribution history on GitHub, or connect with me on LinkedIn.
+            Interested in backend systems, distributed systems, AI agents, and thoughtful
+            engineering teams. Explore my source and contribution history on GitHub, or reach out
+            directly.
           </p>
           <div className="contact-actions">
             <a
               className="button button-primary"
+              href="mailto:gr598895@gmail.com"
+              aria-label="Send email to Gaurav"
+            >
+              <Mail size={18} /> gr598895@gmail.com
+            </a>
+            <a
+              className="button button-quiet"
               href="https://github.com/Gaurav598"
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Github size={18} /> Connect on GitHub <ArrowUpRight size={18} />
+              <Github size={18} /> GitHub <ArrowUpRight size={18} />
             </a>
             <a
               className="button button-quiet"
@@ -672,7 +806,10 @@ function Contact() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              LinkedIn <ArrowUpRight size={18} />
+              <Linkedin size={18} /> LinkedIn <ArrowUpRight size={18} />
+            </a>
+            <a className="button button-quiet" href="Gaurav_Kumar_Thakur_Resume.pdf" download>
+              <Download size={18} /> Resume PDF
             </a>
           </div>
         </Reveal>
@@ -690,16 +827,16 @@ function Footer() {
             G<span>.</span>
           </a>
           <p>
-            Gaurav Thakur · Software engineering student
+            Gaurav Kumar Thakur · Software Engineering Student
             <br />
-            Backend · Distributed systems · Full-stack
+            Backend · Distributed Systems · AI Agents · Full-Stack
           </p>
           <a href="#top" className="back-to-top">
             BACK TO TOP ↑
           </a>
         </Reveal>
         <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} GAURAV THAKUR</span>
+          <span>© {new Date().getFullYear()} GAURAV KUMAR THAKUR</span>
           <div>
             <a href="#work">WORK</a>
             <a href="#open-source">OPEN SOURCE</a>
@@ -744,6 +881,7 @@ export default function App() {
       window.removeEventListener('resize', onScroll);
     };
   }, []);
+
   return (
     <>
       <a className="skip-link" href="#main">
@@ -759,10 +897,10 @@ export default function App() {
         <Hero />
         <About />
         <Work />
+        <ExperienceSection />
         <OpenSource />
         <Toolkit />
-        <Journey />
-        <ProblemSolving />
+        <AchievementsSection items={achievements} />
         <Contact />
       </main>
       <Footer />
